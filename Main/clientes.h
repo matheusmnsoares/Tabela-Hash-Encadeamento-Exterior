@@ -4,6 +4,6 @@ typedef struct clientes
     char nome[100];
     int estado;
     int prox;
-}; cliente;
+}cliente;
 
 
