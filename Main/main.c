@@ -12,6 +12,10 @@ int main(){
 
 void menu(){
     int escolha;
+    FILE *hash;
+    FILE *meta;
+    FILE *clientes;
+
 
     printf("Menu:\n 1 - Inserir \n 2 - Deletar \n 3 - Busca \n 4 - Zerar \n 5 - Sair \n");
     scanf("%d", &escolha);
