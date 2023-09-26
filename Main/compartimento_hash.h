@@ -63,8 +63,56 @@ void inserir(){
 }
 
 void deletar(){
+    int cod;
+    printf("Digite o código do cliente que deseja deletar:");
+    scanf("%d", &cod);
 
+    FILE *hash;
+    FILE *clientes;
+
+    int posicao = cod % 7;
+
+    if ((hash = fopen("tabHash.dat", "r+b")) == NULL){
+        printf("Erro ao abrir o arquivo da tabela Hash");
+        exit(1);
+    }
+    rewind(hash);
+    if(posicao != 0){
+        fseek(hash, sizeof(int)*(posicao-1), SEEK_SET);
+    }
+    else{
+        fseek(hash, sizeof(int), SEEK_SET);
+    }
+
+    fread(&posicao, sizeof(int), 1, hash);
+
+    if ((clientes = fopen("clientes.dat", "r+b")) == NULL){
+        printf("Erro ao abrir o arquivo da tabela Clientes");
+        exit(1);
+    }
+
+    Cliente * atual = (Cliente *);
+    fseek(clientes,sizeof(cliente)*posicao, SEEK_SET);
+
+    while(0 < fread(&atual->cod, sizeof(int), 1, clientes)){
+        fread(atual->nome, sizeof(char),sizeof(atual->nome) )
+        if(atual->cod == cod){
+            atual->estado = 0; // Mark the client as deleted
+            fseek(clientes,sizeof(cliente)*posicao, SEEK_SET);
+            fwrite(atual, sizeof(cliente), 1, clientes); // Write the updated client back to the file
+            printf("Cliente deletado\n");
+            return;
+        }
+        if(atual->prox == -1){
+            break;
+        }
+        posicao = atual->prox;
+        fseek(clientes,sizeof(cliente)*posicao, SEEK_SET);
+    }
+    
+    printf("Cliente não encontrado\n");
 }
+
 
 void busca(){
 
