@@ -3,7 +3,14 @@
 #include "clientes.h"
 
 
-
+Clientes *criarCliente(int chavecliente, char *nomecliente){
+    Cliente *novo = (Cliente *) mallock(sizeof(Cliente));
+    if (novo) memset(novo, 0, sizeof(Cliente));
+    novo->chave = chavecliente;
+    strcpy(novo->nome, nomeCliente);
+    
+return novo;
+}
 void inserir(){
     cliente *cliente = (Cliente *);
     FILE *hash;
