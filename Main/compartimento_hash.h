@@ -8,8 +8,10 @@ Clientes *criarCliente(int chavecliente, char *nomecliente){
     if (novo) memset(novo, 0, sizeof(Cliente));
     novo->chave = chavecliente;
     strcpy(novo->nome, nomeCliente);
+    novo->estado = 1;
+    novo->prox = -1;
     
-return novo;
+    return novo;
 }
 void inserir(){
     cliente *cliente = (Cliente *);
