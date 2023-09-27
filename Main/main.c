@@ -52,7 +52,10 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         menu();
         break;
     case 3:
-        busca();
+        printf("Digite a chave do cliente que você quer buscar:\n");
+        scanf("%d", &chave);
+        
+        novo = busca(hash, clientes, chave);
         menu();
         break;
     case 4:
@@ -60,6 +63,9 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         menu();
         break;
     case 5:
+        fclose(hash);
+        fclose(meta);
+        fclose(clientes);
         exit(1);
         break;
     default:
