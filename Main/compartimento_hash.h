@@ -13,7 +13,7 @@ Clientes *criarCliente(int chavecliente, char *nomecliente){
     
     return novo;
 }
-void inserir(){
+void inserir(FILE* hash,){
     cliente *cliente = (Cliente *);
     FILE *hash;
     FILE *meta;
