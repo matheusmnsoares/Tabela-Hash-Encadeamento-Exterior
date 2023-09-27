@@ -13,27 +13,21 @@ Clientes *criarCliente(int chavecliente, char *nomecliente){
     
     return novo;
 }
-void inserir(FILE* hash,){
-    cliente *cliente = (Cliente *);
-    FILE *hash;
-    FILE *meta;
-    FILE *clientes;
-
+void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
     int posicao, contador;
-    
-    printf("Digite o código do cliente:");
-    scanf("%d", &cliente.cod);
-    printf("Digite o nome do cliente:");
-    scanf("%s", cliente.nome);
-    cliente.estado = 1;
-    cliente.prox = -1;
+    Cliente * checagem = (Cliente *) mallock(sizeof(Cliente));
+    posicao = info->cod % 7;
 
-    posicao = cliente.cod % 7;
-
-    if ((hash = fopen("tabHash.dat", "r+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela Hash");
-    exit(1);
+    checagem = busca(hash, clientes, info->chave);
+    if(checagem->chave == info->chave){
+        printf("A chave escolhida já é cadastrada pelo cliente %s, por favor escolha uma que não esteja em uso", checagem->nome);
+        free(checagem);
+        break;
     }
+    else{
+        free(checagem);
+    }
+
     rewind(hash);
     if(posicao != 0){
         fseek(hash, sizeof(int)*(posicao-1), SEEK_SET);
@@ -43,19 +37,10 @@ void inserir(FILE* hash,){
     }
 
     fread(posicao, sizeof(int), 1, hash);
-    
-    if ((meta = fopen("meta.dat", "r+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela meta");
-    exit(1);
-    }
+
     rewind(meta);
 
     fread(contador, sizeof(int), 1, meta);
-
-    if ((clientes = fopen("clientes.dat", "r+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela Clientes");
-    exit(1);
-    }
 
     if(posicao != -1){
         Cliente * atual = (Cliente *);
