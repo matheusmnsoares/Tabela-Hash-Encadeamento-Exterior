@@ -87,7 +87,7 @@ void deletar(){
     }
     rewind(hash);
     if(posicao != 0){
-        fseek(hash, sizeof(int)*(posicao-1), SEEK_SET);
+        fseek(hash, sizeof(int)*(posicao), SEEK_SET);
     }
     else{
         fseek(hash, sizeof(int), SEEK_SET);
@@ -123,8 +123,49 @@ void deletar(){
 }
 
 
-void busca(){
-
+void busca(FILE *hash, FILE*clientes, int chave){
+    Cliente *procurado =(Cliente *) mallock(sizeof(Cliente));
+    int validade=0;
+    
+    int posicao = chave%7;
+    
+    rewind(hash);
+    if(posicao == 0){
+        fread(&posicao, sizeof(int), 1, hash);
+    }
+    else{
+        fseek(hash, sizeof(int)*posicao, SEEK_SET);
+        fread(&posicao, sizeof(int), 1, hash);
+    }
+    if(posicao != -1){
+        
+        while(validade == 0){
+            rewind(clientes);
+            fseek(cliente, sizeof(Cliente)*posicao, SEEK_SET);
+            
+            fread(&procurado->chave, sizeof(int), 1, clientes);
+            fread(procurado->nome, sizeof(char), sizeof(procurado->nome), clientes);
+            fread(&procurado->estado, sizeof(int), 1, clientes);
+            fread(&procurado->prox, sizeof(int), 1, clientes);
+            
+            if(procurado->chave == chave){
+                validade = 1;
+            }
+            else if(procurado->prox == -1){
+                validade = -1;
+                procurado->chave = -1;
+            }
+            else{
+                posicao = procurado->chave;
+            }
+        }
+        return procurado;
+        
+    }
+    else{
+        procurado->chave = -1;
+        return procurado;
+    }
 }
 
 void zerar(){
