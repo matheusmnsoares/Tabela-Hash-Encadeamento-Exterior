@@ -44,7 +44,7 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         printf("Digite o nome do cliente:\n");
         scanf("%s", nome);
         novo = criarCliente(chave, nome);
-        inserir();
+        inserir(hash, meta, clientes, novo);
         menu();
         break;
     case 2:
@@ -56,6 +56,14 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         scanf("%d", &chave);
         
         novo = busca(hash, clientes, chave);
+        if(novo->chave == -1){
+            printf("Cliente não encontrado");
+        }
+        else{
+            printf("Chave do cliente: %d \n", novo->chave);
+            printf("Nome do cliente: %s \n", novo->nome);
+            printf("Proximo cliente dessa faixa se encontra no %d lugar", novo->prox);
+        }
         menu();
         break;
     case 4:
@@ -63,6 +71,7 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         menu();
         break;
     case 5:
+        free(novo);
         fclose(hash);
         fclose(meta);
         fclose(clientes);
