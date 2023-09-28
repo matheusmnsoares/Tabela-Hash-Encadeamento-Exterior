@@ -4,7 +4,7 @@
 
 
 Clientes *criarCliente(int chavecliente, char *nomecliente){
-    Cliente *novo = (Cliente *) mallock(sizeof(Cliente));
+    Cliente *novo = (Cliente *) malloc(sizeof(Cliente));
     if (novo) memset(novo, 0, sizeof(Cliente));
     novo->chave = chavecliente;
     strcpy(novo->nome, nomeCliente);
@@ -15,7 +15,7 @@ Clientes *criarCliente(int chavecliente, char *nomecliente){
 }
 void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
     int posicao, contador;
-    Cliente * checagem = (Cliente *) mallock(sizeof(Cliente));
+    Cliente * checagem = (Cliente *) malloc(sizeof(Cliente));
     posicao = info->cod % 7;
 
     checagem = busca(hash, clientes, info->chave);
@@ -135,8 +135,9 @@ void deletar(){
 }
 
 
+
 Cliente * busca(FILE *hash, FILE*clientes, int chave){
-    Cliente *procurado =(Cliente *) mallock(sizeof(Cliente));
+    Cliente *procurado =(Cliente *) malloc(sizeof(Cliente));
     int validade=0;
     
     int posicao = chave%7;
