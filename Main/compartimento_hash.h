@@ -29,12 +29,12 @@ void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
     rewind(hash);
     if(posicao != 0){
         fseek(hash, sizeof(int)*(posicao), SEEK_SET);
+        fread(&posicao, sizeof(int), 1, hash);
     }
     else{
-        fseek(hash, sizeof(int), SEEK_SET);
+        fread(&posicao, sizeof(int), 1, hash);
     }
 
-    fread(&posicao, sizeof(int), 1, hash);
     rewind(meta);
 
     fread(&contador, sizeof(int), 1, meta);
@@ -54,6 +54,8 @@ void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
             }
             else if(checagem->prox == -1){
                 validade = 1;
+                fseek(cliente, sizeof(int)*-1, SEEK_SET);
+                fwrite(&contador, sizeof(int), 1, cliente);
             }
             else{
                 posicao = checagem->chave;
@@ -73,9 +75,10 @@ void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
         fwrite(info->nome, sizeof(char), sizeof(info->nome), cliente);
         fwrite(&info->estado, sizeof(int), 1, cliente);
         fwrite(&info->prox, sizeof(int), 1, cliente);
-        contador++;   
-        }
+        contador++;
         printf("Cliente cadastrado com sucesso no fim da tabela")
+        }
+       
     }
 }
 
@@ -181,32 +184,17 @@ Cliente * busca(FILE *hash, FILE*clientes, int chave){
     }
 }
 
-void zerar(){
-
-FILE *hash;
-FILE *meta;
-FILE *clientes;
+void zerar(FILE *hash,FILE *meta,FILE *clientes){
 
 int contador = 0;
 
 int a = -1;
-
-if ((hash = fopen("tabHash.dat", "w+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela Hash");
-    exit(1);
-}
+rewind(hash);
 for(int i = 0; i<6; i++){
     fwrite(&a, sizeof(int),  1, hash);
 }
-fclose(hash);
-
-if ((meta = fopen("meta.dat", "w+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela meta");
-    exit(1);
-}
 
 fwrite(&contador, sizeof(int), 1, meta);
-fclose(meta);
 
 if ((clientes = fopen("clientes.dat", "w+b")) == NULL){
     printf("Erro ao abrir o arquivo da tabela clientes");
