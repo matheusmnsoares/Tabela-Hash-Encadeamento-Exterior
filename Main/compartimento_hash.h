@@ -1,28 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "clientes.h"
 
 
-Clientes *criarCliente(int chavecliente, char *nomecliente){
+Cliente *criarCliente(int chavecliente, char *nomecliente){
     Cliente *novo = (Cliente *) malloc(sizeof(Cliente));
     if (novo) memset(novo, 0, sizeof(Cliente));
     novo->chave = chavecliente;
-    strcpy(novo->nome, nomeCliente);
+    strcpy(novo->nome, nomecliente);
     novo->estado = 1;
     novo->prox = -1;
     
     return novo;
 }
-void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
+void inserir(FILE *hash,FILE *meta,FILE *clientes, Cliente *info){
     int posicao, contador;
+    int validade = 0;
     Cliente * checagem = (Cliente *) malloc(sizeof(Cliente));
-    posicao = info->cod % 7;
+    posicao = info->chave % 7;
 
     checagem = busca(hash, clientes, info->chave);
     if(checagem->chave == info->chave){
         printf("A chave escolhida já é cadastrada pelo cliente %s, por favor escolha uma que não esteja em uso", checagem->nome);
         free(checagem);
-        break;
+        return 0;
     }
    
 
@@ -42,7 +44,7 @@ void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
     if(posicao != -1){
        while(validade == 0){
             rewind(clientes);
-            fseek(cliente, sizeof(Cliente)*posicao, SEEK_SET);
+            fseek(clientes, sizeof(Cliente)*posicao, SEEK_SET);
             
             fread(&checagem->chave, sizeof(int), 1, clientes);
             fread(checagem->nome, sizeof(char), sizeof(checagem->nome), clientes);
@@ -54,8 +56,8 @@ void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
             }
             else if(checagem->prox == -1){
                 validade = 1;
-                fseek(cliente, sizeof(int)*-1, SEEK_SET);
-                fwrite(&contador, sizeof(int), 1, cliente);
+                fseek(clientes, sizeof(int)*-1, SEEK_SET);
+                fwrite(&contador, sizeof(int), 1, clientes);
             }
             else{
                 posicao = checagem->chave;
@@ -63,31 +65,31 @@ void inserir(FILE *hash,FILE *meta,FILE *clientes, Clientes *info){
         }
         rewind(clientes);
         if(validade == 2){
-            fseek(cliente, sizeof(Cliente)*posicao, SEEK_SET);
-            fwrite(&info->chave, sizeof(int), 1, cliente);
-            fwrite(info->nome, sizeof(char), sizeof(info->nome), cliente);
-            fwrite(&info->estado, sizeof(int), 1, cliente);
+            fseek(clientes, sizeof(Cliente)*posicao, SEEK_SET);
+            fwrite(&info->chave, sizeof(int), 1, clientes);
+            fwrite(info->nome, sizeof(char), sizeof(info->nome), clientes);
+            fwrite(&info->estado, sizeof(int), 1, clientes);
             printf("Cliente cadastrado com sucesso em uma posição vazia");
         }
     }else{
-        fseek(cliente, sizeof(Cliente)*contador, SEEK_SET);
-        fwrite(&info->chave, sizeof(int), 1, cliente);
-        fwrite(info->nome, sizeof(char), sizeof(info->nome), cliente);
-        fwrite(&info->estado, sizeof(int), 1, cliente);
-        fwrite(&info->prox, sizeof(int), 1, cliente);
+        fseek(clientes, sizeof(Cliente)*contador, SEEK_SET);
+        fwrite(&info->chave, sizeof(int), 1, clientes);
+        fwrite(info->nome, sizeof(char), sizeof(info->nome), clientes);
+        fwrite(&info->estado, sizeof(int), 1, clientes);
+        fwrite(&info->prox, sizeof(int), 1, clientes);
         contador++;
-        printf("Cliente cadastrado com sucesso no fim da tabela")
+        printf("Cliente cadastrado com sucesso no fim da tabela");
         }
        
     }
-}
+
 
 
 
 
 
 void deletar(){
-    int cod;
+    /*int cod;
     printf("Digite o código do cliente que deseja deletar:");
     scanf("%d", &cod);
 
@@ -115,12 +117,9 @@ void deletar(){
         exit(1);
     }
 
-    Cliente * atual = (Cliente *);
-    fseek(clientes,sizeof(cliente)*posicao, SEEK_SET);
-
-    while(0 < fread(&atual->cod, sizeof(int), 1, clientes)){
-        fread(atual->nome, sizeof(char),sizeof(atual->nome) )
-        if(atual->cod == cod){
+    while(0 < fread(&atual->chave, sizeof(int), 1, clientes)){
+        fread(atual->nome, sizeof(char),sizeof(atual->nome), clientes);
+        if(atual->chave == cod){
             atual->estado = 0; // Mark the client as deleted
             fseek(clientes,sizeof(cliente)*posicao, SEEK_SET);
             fwrite(atual, sizeof(cliente), 1, clientes); // Write the updated client back to the file
@@ -135,11 +134,12 @@ void deletar(){
     }
     
     printf("Cliente não encontrado\n");
+    */
 }
 
 
 
-Cliente * busca(FILE *hash, FILE*clientes, int chave){
+Cliente *busca(FILE *hash, FILE*clientes, int chave){
     Cliente *procurado =(Cliente *) malloc(sizeof(Cliente));
     int validade=0;
     
@@ -157,7 +157,7 @@ Cliente * busca(FILE *hash, FILE*clientes, int chave){
         
         while(validade == 0){
             rewind(clientes);
-            fseek(cliente, sizeof(Cliente)*posicao, SEEK_SET);
+            fseek(clientes, sizeof(Cliente)*posicao, SEEK_SET);
             
             fread(&procurado->chave, sizeof(int), 1, clientes);
             fread(procurado->nome, sizeof(char), sizeof(procurado->nome), clientes);
@@ -185,21 +185,22 @@ Cliente * busca(FILE *hash, FILE*clientes, int chave){
 }
 
 void zerar(FILE *hash,FILE *meta,FILE *clientes){
+    FILE* new;
+    int contador = 0;
 
-int contador = 0;
+    int a = -1;
+    rewind(hash);
+    for(int i = 0; i<6; i++){
+        fwrite(&a, sizeof(int),  1, hash);
+    }
+    rewind(meta);
+    fwrite(&contador, sizeof(int), 1, meta);
+    fclose(clientes);
 
-int a = -1;
-rewind(hash);
-for(int i = 0; i<6; i++){
-    fwrite(&a, sizeof(int),  1, hash);
+    if ((new = fopen("clientes.dat", "w+b")) == NULL){
+        printf("Erro ao abrir o arquivo da tabela clientes");
+        exit(1);
+    }
+    fclose(new);
 }
 
-fwrite(&contador, sizeof(int), 1, meta);
-
-if ((clientes = fopen("clientes.dat", "w+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela clientes");
-    exit(1);
-}
-fclose(clientes);
-}
-}

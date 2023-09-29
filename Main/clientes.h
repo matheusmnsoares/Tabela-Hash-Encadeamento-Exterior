@@ -1,9 +1,9 @@
-typedef struct clientes
+typedef struct Cliente
 {
-    int cod;
+    int chave;
     char nome[100];
     int estado;
     int prox;
-}cliente;
+}Cliente;
 
 

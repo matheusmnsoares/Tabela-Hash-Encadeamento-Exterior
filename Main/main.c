@@ -38,20 +38,20 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
     scanf("%d", &escolha);
     switch (escolha)
     {
-    case 1:
+    case (1) :
         printf("Digite o número da chave do cliente: \n");
         scanf("%d", &chave);
         printf("Digite o nome do cliente:\n");
         scanf("%s", nome);
         novo = criarCliente(chave, nome);
         inserir(hash, meta, clientes, novo);
-        menu();
+        menu(hash, meta, clientes);
         break;
-    case 2:
+    case (2):
         deletar();
-        menu();
+        menu(hash, meta, clientes);
         break;
-    case 3:
+    case (3):
         printf("Digite a chave do cliente que você quer buscar:\n");
         scanf("%d", &chave);
         
@@ -64,13 +64,12 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
             printf("Nome do cliente: %s \n", novo->nome);
             printf("Proximo cliente dessa faixa se encontra no %d lugar", novo->prox);
         }
-        menu();
+        menu(hash, meta, clientes);
         break;
-    case 4:
-        zerar();
-        menu();
+    case (4):
+        zerar(hash, meta, clientes);
         break;
-    case 5:
+    case (5):
         free(novo);
         fclose(hash);
         fclose(meta);
@@ -79,7 +78,7 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         break;
     default:
         printf("Escolha um dos números do menu\n");
-        menu();
+        menu(hash, meta, clientes);
         break;
     }
 
