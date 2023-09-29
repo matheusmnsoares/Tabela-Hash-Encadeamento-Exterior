@@ -147,7 +147,7 @@ Cliente * busca(FILE *hash, FILE*clientes, int chave){
         fread(&posicao, sizeof(int), 1, hash);
     }
     else{
-        fseek(hash, sizeof(int)*posicao, SEEK_SET);
+        fseek(hash, sizeof(int)*posicao, SEEK_SET); 
         fread(&posicao, sizeof(int), 1, hash);
     }
     if(posicao != -1){
@@ -169,7 +169,7 @@ Cliente * busca(FILE *hash, FILE*clientes, int chave){
                 procurado->chave = -1;
             }
             else{
-                posicao = procurado->chave;
+                posicao = procurado->prox;
             }
         }
         return procurado;
