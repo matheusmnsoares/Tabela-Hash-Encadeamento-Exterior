@@ -98,7 +98,8 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
 
 
 void deletar(){
-    /*int cod;
+    
+    int cod;
     printf("Digite o código do cliente que deseja deletar:");
     scanf("%d", &cod);
 
@@ -129,9 +130,9 @@ void deletar(){
     while(0 < fread(&atual->chave, sizeof(int), 1, clientes)){
         fread(atual->nome, sizeof(char),sizeof(atual->nome), clientes);
         if(atual->chave == cod){
-            atual->estado = 0; // Mark the client as deleted
-            fseek(clientes,sizeof(cliente)*posicao, SEEK_SET);
-            fwrite(atual, sizeof(cliente), 1, clientes); // Write the updated client back to the file
+            atual->estado = 0; 
+            fseek(clientes,sizeof(Cliente)*posicao, SEEK_SET);
+            fwrite(atual, sizeof(Cliente), 1, clientes); 
             printf("Cliente deletado\n");
             return;
         }
@@ -139,11 +140,12 @@ void deletar(){
             break;
         }
         posicao = atual->prox;
-        fseek(clientes,sizeof(cliente)*posicao, SEEK_SET);
+        fseek(clientes,sizeof(Cliente)*posicao, SEEK_SET);
     }
     
     printf("Cliente não encontrado\n");
-    */
+    
+
 }
 
 
