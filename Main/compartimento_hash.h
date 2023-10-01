@@ -63,6 +63,7 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
                 posicao = checagem->prox;
             }
         }
+        
         rewind(clientes);
         if(validade == 2){
             fseek(clientes, sizeof(Cliente)*posicao, SEEK_SET);
@@ -70,17 +71,6 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
             fwrite(info->nome, sizeof(char), sizeof(info->nome), clientes);
             fwrite(&info->estado, sizeof(int), 1, clientes);
             printf("Cliente cadastrado com sucesso em uma posição vazia");
-        }
-        else if(validade == 1){
-            fseek(clientes, sizeof(Cliente)*contador, SEEK_SET);
-            fwrite(&info->chave, sizeof(int), 1, clientes);
-            fwrite(info->nome, sizeof(char), sizeof(info->nome), clientes);
-            fwrite(&info->estado, sizeof(int), 1, clientes);
-            fwrite(&info->prox, sizeof(int), 1, clientes);
-            contador++;
-            rewind(meta);
-            fwrite($contador, sizeof(int), 1, meta);
-            printf("Cliente cadastrado com sucesso no fim da tabela");
         }
     }else{ //Não existe cliente naquela hash
         rewind(clientes);
@@ -92,10 +82,12 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
         contador++;
         rewind(meta);
         fwrite($contador, sizeof(int), 1, meta);
-        rewind(hash);
-        posicao = info->chave % 7;
-        fseek(hash, sizeof(int)*(posicao), SEEK_SET);
-        fwrite(&posicao, sizeof(int), 1, hash);
+        if(validade != 1){
+            rewind(hash);
+            posicao = info->chave % 7;
+            fseek(hash, sizeof(int)*(posicao), SEEK_SET);
+            fwrite(&posicao, sizeof(int), 1, hash);
+        }
     }
        
     }
