@@ -60,7 +60,7 @@ void inserir(FILE *hash,FILE *meta,FILE *clientes, Cliente *info){
                 fwrite(&contador, sizeof(int), 1, clientes);
             }
             else{
-                posicao = checagem->chave;
+                posicao = checagem->prox;
             }
         }
         rewind(clientes);
