@@ -73,7 +73,7 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
             printf("Cliente cadastrado com sucesso em uma posição vazia");
         }
     }
-    if(validade == 2){ //Não existe cliente naquela hash
+    if(validade != 2){ //Não existe cliente naquela hash
         rewind(clientes);
         fseek(clientes, sizeof(Cliente)*contador, SEEK_SET);
         fwrite(&info->chave, sizeof(int), 1, clientes);
@@ -83,7 +83,7 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
         contador++;
         rewind(meta);
         fwrite($contador, sizeof(int), 1, meta);
-        if(validade != 1){
+        if(validade ==0){
             rewind(hash);
             posicao = info->chave % 7;
             fseek(hash, sizeof(int)*(posicao), SEEK_SET);
