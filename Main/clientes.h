@@ -1,3 +1,6 @@
+#ifndef CLIENTE_H
+#define CLIENTE_H
+
 typedef struct Cliente
 {
     int chave;
@@ -6,4 +9,5 @@ typedef struct Cliente
     int prox;
 }Cliente;
 
+#endif
 

@@ -3,30 +3,6 @@
 #include "clientes.h"
 #include "compartimento_hash.h"
 
-int main(){
-    FILE *hash;
-    FILE *meta;
-    FILE *clientes;
-
-
-    if ((hash = fopen("tabHash.dat", "r+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela Hash");
-    exit(1);
-    }
-    if ((meta = fopen("meta.dat", "r+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela Meta");
-    exit(1);
-    }
-
-    if ((hash = fopen("clientes.dat", "r+b")) == NULL){
-    printf("Erro ao abrir o arquivo da tabela Clientess");
-    exit(1);
-    }
-    
-    menu(hash, meta, clientes);
-
-    return 0;
-}
 
 void menu(FILE *hash, FILE *meta, FILE *clientes){
     int escolha, chave;
@@ -48,7 +24,7 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         menu(hash, meta, clientes);
         break;
     case (2):
-        deletar();
+        //deletar();
         menu(hash, meta, clientes);
         break;
     case (3):
@@ -82,4 +58,29 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         break;
     }
 
+}
+
+int main(){
+    FILE *hash;
+    FILE *meta;
+    FILE *clientes;
+
+
+    if ((hash = fopen("tabHash.dat", "r+b")) == NULL){
+    printf("Erro ao abrir o arquivo da tabela Hash");
+    exit(1);
+    }
+    if ((meta = fopen("meta.dat", "r+b")) == NULL){
+    printf("Erro ao abrir o arquivo da tabela Meta");
+    exit(1);
+    }
+
+    if ((hash = fopen("clientes.dat", "r+b")) == NULL){
+    printf("Erro ao abrir o arquivo da tabela Clientess");
+    exit(1);
+    }
+    
+    menu(hash, meta, clientes);
+
+    return 0;
 }

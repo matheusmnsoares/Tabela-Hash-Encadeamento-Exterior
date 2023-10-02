@@ -14,6 +14,52 @@ Cliente *criarCliente(int chavecliente, char *nomecliente){
     
     return novo;
 }
+
+Cliente *busca(FILE *hash, FILE*clientes, int chave){
+    Cliente *procurado =(Cliente *) malloc(sizeof(Cliente));
+    int validade=0;
+    
+    int posicao = chave%7;
+    
+    rewind(hash);
+    if(posicao == 0){
+        fread(&posicao, sizeof(int), 1, hash);
+    }
+    else{
+        fseek(hash, sizeof(int)*posicao, SEEK_SET); 
+        fread(&posicao, sizeof(int), 1, hash);
+    }
+    if(posicao != -1){
+        
+        while(validade == 0){
+            rewind(clientes);
+            fseek(clientes, sizeof(Cliente)*posicao, SEEK_SET);
+            
+            fread(&procurado->chave, sizeof(int), 1, clientes);
+            fread(procurado->nome, sizeof(char), sizeof(procurado->nome), clientes);
+            fread(&procurado->estado, sizeof(int), 1, clientes);
+            fread(&procurado->prox, sizeof(int), 1, clientes);
+            
+            if(procurado->chave == chave){
+                validade = 1;
+            }
+            else if(procurado->prox == -1){
+                validade = -1;
+                procurado->chave = -1;
+            }
+            else{
+                posicao = procurado->prox;
+            }
+        }
+        return procurado;
+        
+    }
+    else{
+        procurado->chave = -1;
+        return procurado;
+    }
+}
+
 void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
     int posicao, contador;
     int validade = 0;
@@ -24,7 +70,7 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
     if(checagem->chave == info->chave){
         printf("A chave escolhida já é cadastrada pelo cliente %s, por favor escolha uma que não esteja em uso", checagem->nome);
         free(checagem);
-        return 0;
+        return;
     }
    
 
@@ -82,7 +128,7 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
         fwrite(&info->prox, sizeof(int), 1, clientes);
         contador++;
         rewind(meta);
-        fwrite($contador, sizeof(int), 1, meta);
+        fwrite(&contador, sizeof(int), 1, meta);
         if(validade ==0){
             rewind(hash);
             posicao = info->chave % 7;
@@ -91,14 +137,9 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
         }
     }
        
-    }
+}
 
-
-
-
-
-
-void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
+//void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
 
    /* void deleteFromHashFile(FILE* file, char* chavecliente) { 
     FILE* tempFile = fopen("temp.dat", "w+");
@@ -131,7 +172,10 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
         printf("Elemento com chave '%s' não encontrado no arquivo hash.\n", chavecliente);
     }
 }
-} */
+*/
+
+
+/*
     int validade = 0;
     int posicao = cod % 7;
     Cliente * atual = (Cliente *) malloc(sizeof(Cliente));
@@ -166,56 +210,7 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
     }
     
     printf("Cliente não encontrado\n");
-    
-
-}*/
-
-
-
-Cliente *busca(FILE *hash, FILE*clientes, int chave){
-    Cliente *procurado =(Cliente *) malloc(sizeof(Cliente));
-    int validade=0;
-    
-    int posicao = chave%7;
-    
-    rewind(hash);
-    if(posicao == 0){
-        fread(&posicao, sizeof(int), 1, hash);
-    }
-    else{
-        fseek(hash, sizeof(int)*posicao, SEEK_SET); 
-        fread(&posicao, sizeof(int), 1, hash);
-    }
-    if(posicao != -1){
-        
-        while(validade == 0){
-            rewind(clientes);
-            fseek(clientes, sizeof(Cliente)*posicao, SEEK_SET);
-            
-            fread(&procurado->chave, sizeof(int), 1, clientes);
-            fread(procurado->nome, sizeof(char), sizeof(procurado->nome), clientes);
-            fread(&procurado->estado, sizeof(int), 1, clientes);
-            fread(&procurado->prox, sizeof(int), 1, clientes);
-            
-            if(procurado->chave == chave){
-                validade = 1;
-            }
-            else if(procurado->prox == -1){
-                validade = -1;
-                procurado->chave = -1;
-            }
-            else{
-                posicao = procurado->prox;
-            }
-        }
-        return procurado;
-        
-    }
-    else{
-        procurado->chave = -1;
-        return procurado;
-    }
-}
+*/
 
 void zerar(FILE *hash,FILE *meta,FILE *clientes){
     FILE* new;
