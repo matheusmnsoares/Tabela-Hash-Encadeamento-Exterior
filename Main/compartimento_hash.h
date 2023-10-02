@@ -72,7 +72,8 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
             fwrite(&info->estado, sizeof(int), 1, clientes);
             printf("Cliente cadastrado com sucesso em uma posição vazia");
         }
-    }else{ //Não existe cliente naquela hash
+    }
+    if(validade == 2){ //Não existe cliente naquela hash
         rewind(clientes);
         fseek(clientes, sizeof(Cliente)*contador, SEEK_SET);
         fwrite(&info->chave, sizeof(int), 1, clientes);
