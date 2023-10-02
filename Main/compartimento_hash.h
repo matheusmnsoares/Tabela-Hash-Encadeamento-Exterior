@@ -201,10 +201,11 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
                 atual->estado = 0;
                 proximo = atual->prox;
                 fseek(clientes,sizeof(clientes)*-1, SEEK_SET);
+                
                 fwrite(&atual->chave, sizeof(int), 1, clientes);
                 fwrite(atual->nome, sizeof(char),sizeof(atual->nome), clientes);
                 fwrite(&atual->estado, sizeof(int), 1, clientes);
-                fwrite(atual->estado, sizeof(int), 1, clientes); 
+                
                 printf("Cliente deletado\n");
                 return;
             }
