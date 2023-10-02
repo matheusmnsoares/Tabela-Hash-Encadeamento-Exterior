@@ -98,9 +98,9 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
 
 
 
-void deletar(){
+void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
 
-    void deleteFromHashFile(FILE* file, char* chavecliente) {
+    void deleteFromHashFile(FILE* file, char* chavecliente) { 
     FILE* tempFile = fopen("temp.dat", "w+");
     if (tempFile == NULL) {
         perror("Erro ao criar arquivo temporário");
