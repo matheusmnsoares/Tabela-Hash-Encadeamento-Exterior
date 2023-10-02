@@ -139,7 +139,7 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
        
 }
 
-//void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
+void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
 
    /* void deleteFromHashFile(FILE* file, char* chavecliente) { 
     FILE* tempFile = fopen("temp.dat", "w+");
@@ -175,41 +175,59 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
 */
 
 
-/*
-    int validade = 0;
-    int posicao = cod % 7;
+
+    int validade = 0, posinicial, pulo, proximo;
+    int posicao = chave % 7;
     Cliente * atual = (Cliente *) malloc(sizeof(Cliente));
     rewind(hash);
-    if(posicao != 0){
-        fseek(hash, sizeof(int)*(posicao), SEEK_SET);
-    }
-    else{
-        fseek(hash, sizeof(int), SEEK_SET);
-    }
-
-    fread(&posicao, sizeof(int), 1, hash);
-
-    while(validade != 0){
-        fread(atual->chave, sizeof(int), 1, clientes);
-        fread(atual->nome, sizeof(char),sizeof(atual->nome), clientes);
-        fread(&checagem->estado, sizeof(int), 1, clientes);
-        fread(&checagem->prox, sizeof(int), 1, clientes);
-            
-        if(atual->chave == cod){
-            atual->estado = 0; 
-            fseek(clientes,sizeof(Cliente)*posicao, SEEK_SET);
-            fwrite(atual, sizeof(Cliente), 1, clientes); 
-            printf("Cliente deletado\n");
-            return;
-        }
-        if(atual->prox == -1){
-            break;
-        }
-        posicao = atual->prox;
-        fseek(clientes,sizeof(Cliente)*posicao, SEEK_SET);
-    }
     
-    printf("Cliente não encontrado\n");
+    fseek(hash, sizeof(int)*(posicao), SEEK_SET);
+ 
+    fread(&posicao, sizeof(int), 1, hash);
+    posinicial = posicao;
+    if(posicao != -1){
+        while(validade != 0){
+            rewind(clientes);
+            fseek(clientes, sizeof(Cliente)*posicao, SEEK_SET);
+            fread(atual->chave, sizeof(int), 1, clientes);
+            fread(atual->nome, sizeof(char),sizeof(atual->nome), clientes);
+            fread(&atual->estado, sizeof(int), 1, clientes);
+            fread(&atual->prox, sizeof(int), 1, clientes);
+                
+            if(atual->chave == chave){
+                validade = 1;
+                atual->chave = -1
+                strcpy(atual->nome, "----");
+                atual->estado = 0;
+                proximo = atual->prox;
+                fseek(clientes,sizeof(clientes)*-1, SEEK_SET);
+                fwrite(&atual->chave, sizeof(int), 1, clientes);
+                fwrite(atual->nome, sizeof(char),sizeof(atual->nome), clientes);
+                fwrite(&atual->estado, sizeof(int), 1, clientes);
+                fwrite(atual->estado, sizeof(int), 1, clientes); 
+                printf("Cliente deletado\n");
+                return;
+            }
+            else if(atual->prox == -1){
+                validade = -1;
+                printf("Cliente não encontrado\n");
+                break;
+            }
+            else{
+                posicao = atual->prox;
+            }
+        }
+        if(posicao == posinicial){
+            rewind(hash);
+            pulo = chave % 7;
+            fseek(hash, sizeof(int)*(pulo), SEEK_SET);
+            fwrite(&proximo, sizeof(int), 1, clientes);
+            
+        }
+        
+    }
+}
+    
 */
 
 void zerar(FILE *hash,FILE *meta,FILE *clientes){
