@@ -100,7 +100,7 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
 
 void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
 
-    void deleteFromHashFile(FILE* file, char* chavecliente) { 
+   /* void deleteFromHashFile(FILE* file, char* chavecliente) { 
     FILE* tempFile = fopen("temp.dat", "w+");
     if (tempFile == NULL) {
         perror("Erro ao criar arquivo temporário");
@@ -131,21 +131,10 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
         printf("Elemento com chave '%s' não encontrado no arquivo hash.\n", chavecliente);
     }
 }
-}
-    
-    /*int cod;
-    printf("Digite o código do cliente que deseja deletar:");
-    scanf("%d", &cod);
-
-    FILE *hash;
-    FILE *clientes;
-
+} */
+    int validade = 0;
     int posicao = cod % 7;
-
-    if ((hash = fopen("tabHash.dat", "r+b")) == NULL){
-        printf("Erro ao abrir o arquivo da tabela Hash");
-        exit(1);
-    }
+    Cliente * atual = (Cliente *) malloc(sizeof(Cliente));
     rewind(hash);
     if(posicao != 0){
         fseek(hash, sizeof(int)*(posicao), SEEK_SET);
@@ -156,13 +145,12 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
 
     fread(&posicao, sizeof(int), 1, hash);
 
-    if ((clientes = fopen("clientes.dat", "r+b")) == NULL){
-        printf("Erro ao abrir o arquivo da tabela Clientes");
-        exit(1);
-    }
-
-    while(0 < fread(&atual->chave, sizeof(int), 1, clientes)){
+    while(validade != 0){
+        fread(atual->chave, sizeof(int), 1, clientes);
         fread(atual->nome, sizeof(char),sizeof(atual->nome), clientes);
+        fread(&checagem->estado, sizeof(int), 1, clientes);
+        fread(&checagem->prox, sizeof(int), 1, clientes);
+            
         if(atual->chave == cod){
             atual->estado = 0; 
             fseek(clientes,sizeof(Cliente)*posicao, SEEK_SET);
