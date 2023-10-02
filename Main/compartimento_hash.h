@@ -176,7 +176,7 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
 
 
 
-    int validade = 0, posinicial, pulo, proximo;
+    int validade = 0, pulo, proximo;
     int posicao = chave % 7;
     Cliente * atual = (Cliente *) malloc(sizeof(Cliente));
     rewind(hash);
@@ -217,14 +217,9 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
                 posicao = atual->prox;
             }
         }
-        if(posicao == posinicial){
-            rewind(hash);
-            pulo = chave % 7;
-            fseek(hash, sizeof(int)*(pulo), SEEK_SET);
-            fwrite(&proximo, sizeof(int), 1, clientes);
-            
-        }
-        
+    }
+    else{
+        printf("Cliente não existe");
     }
 }
     
