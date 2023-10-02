@@ -98,8 +98,41 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
 
 
 void deletar(){
+
+    void deleteFromHashFile(FILE* file, char* chavecliente) {
+    FILE* tempFile = fopen("temp.dat", "w+");
+    if (tempFile == NULL) {
+        perror("Erro ao criar arquivo temporário");
+        return;
+    }
+
+    struct HashNode node;
+    int deleted = 0;
+
+    rewind(file);
+    while (fread(&node, sizeof(struct HashNode), 1, file)) {
+        if (strcmp(node.chavecliente, chavecliente) != 0) {
+            fwrite(&node, sizeof(struct HashNode), 1, tempFile);
+        } else {
+            deleted = 1;
+        }
+    }
+
+    fclose(file);
+    fclose(tempFile);
+
+    if (deleted) {
+        remove("hash.dat");
+        rename("temp.dat", "hash.dat");
+        printf("Elemento com chave '%s' excluído com sucesso.\n", chavecliente);
+    } else {
+        remove("temp.dat");
+        printf("Elemento com chave '%s' não encontrado no arquivo hash.\n", chavecliente);
+    }
+}
+}
     
-    int cod;
+    /*int cod;
     printf("Digite o código do cliente que deseja deletar:");
     scanf("%d", &cod);
 
@@ -146,7 +179,7 @@ void deletar(){
     printf("Cliente não encontrado\n");
     
 
-}
+}*/
 
 
 
