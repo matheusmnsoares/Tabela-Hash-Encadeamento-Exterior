@@ -141,7 +141,9 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
 }
 
 void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
-
+    int validade = 0, pulo, proximo;
+    int posicao = chave % 7;
+    Cliente * atual = (Cliente *) malloc(sizeof(Cliente));
    /* void deleteFromHashFile(FILE* file, char* chavecliente) { 
     FILE* tempFile = fopen("temp.dat", "w+");
     if (tempFile == NULL) {
@@ -177,15 +179,12 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
 
 
 
-    int validade = 0, pulo, proximo;
-    int posicao = chave % 7;
-    Cliente * atual = (Cliente *) malloc(sizeof(Cliente));
+    
     rewind(hash);
     
     fseek(hash, sizeof(int)*(posicao), SEEK_SET);
  
     fread(&posicao, sizeof(int), 1, hash);
-    posinicial = posicao;
     if(posicao != -1){
         while(validade != 0){
             rewind(clientes);
@@ -223,12 +222,13 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
     else{
         printf("Cliente não existe");
     }
+    free(atual);
 }
     
 */
 
 void zerar(FILE *hash,FILE *meta,FILE *clientes){
-    FILE* new;
+    FILE* novo;
     int contador = 0;
 
     int a = -1;
@@ -240,10 +240,10 @@ void zerar(FILE *hash,FILE *meta,FILE *clientes){
     fwrite(&contador, sizeof(int), 1, meta);
     fclose(clientes);
 
-    if ((new = fopen("clientes.dat", "w+b")) == NULL){
+    if ((novo = fopen("clientes.dat", "w+b")) == NULL){
         printf("Erro ao abrir o arquivo da tabela clientes");
         exit(1);
     }
-    fclose(new);
+    fclose(novo);
 }
 
