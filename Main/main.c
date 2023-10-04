@@ -21,10 +21,9 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         scanf("%s", nome);
         novo = criarCliente(chave, nome);
         inserir(hash, meta, clientes, novo);
-        menu(hash, meta, clientes);
         break;
     case (2):
-        //deletar();
+        deletar( hash, meta, clientes, chave);
         menu(hash, meta, clientes);
         break;
     case (3):
@@ -64,6 +63,9 @@ int main(){
     FILE *hash;
     FILE *meta;
     FILE *clientes;
+    hash = fopen(HASH_FILENAME, "w+b");
+    meta = fopen("meta.dat", "w+b");
+    clientes = fopen(CLIENTS_FILENAME, "w+b");
 
 
     if ((hash = fopen("tabHash.dat", "r+b")) == NULL){
