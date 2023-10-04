@@ -73,7 +73,6 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
         return;
     }
    
-
     rewind(hash);
     if(posicao != 0){
         fseek(hash, sizeof(int)*(posicao), SEEK_SET);
@@ -129,13 +128,15 @@ void inserir(FILE *hash, FILE *meta, FILE *clientes, Cliente *info){
         contador++;
         rewind(meta);
         fwrite(&contador, sizeof(int), 1, meta);
-        if(validade ==0){
+        if(validade == 0){
             rewind(hash);
             posicao = info->chave % 7;
             fseek(hash, sizeof(int)*(posicao), SEEK_SET);
             fwrite(&posicao, sizeof(int), 1, hash);
         }
     }
+    free(checagem);
+    free(info);
        
 }
 
