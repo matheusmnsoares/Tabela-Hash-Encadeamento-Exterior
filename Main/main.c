@@ -29,6 +29,8 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         printf("fechando arquivos e ponteiros");
         break;
     case (2):
+        printf("Digite a chave do cliente que você quer deletar:\n");
+        scanf("%d", &chave);
         deletar( hash, meta, clientes, chave);
         //menu(hash, meta, clientes);
         free(novo);

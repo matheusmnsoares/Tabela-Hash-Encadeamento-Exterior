@@ -103,17 +103,28 @@ void inserir(FILE *tabhash, FILE *meta, FILE *clientes, Cliente *info){
         while (validade == 0) {
             rewind(clientes);
             fseek(clientes, sizeof(Cliente) * posicao, SEEK_SET);
-            printf("pulo de %d", posicao);
+            printf("pulo de %d \n", posicao);
             fread(&checagem->chave, sizeof(int), 1, clientes);
             fread(checagem->nome, sizeof(char), sizeof(checagem->nome), clientes);
+            printf("nome na fila: %s \n", checagem->nome);
             fread(&checagem->estado, sizeof(int), 1, clientes);
             fread(&checagem->prox, sizeof(int), 1, clientes);
+
+            printf("%d\n", checagem->prox);
 
             if (checagem->estado == 0) {
                 validade = 2;
             } else if (checagem->prox == -1) {
+                //printf("final da fila encontrado");
                 validade = 1;
-                fseek(clientes, sizeof(int) * -1, SEEK_SET);
+                rewind(clientes);
+                if(posicao != 0){
+                fseek(clientes, sizeof(Cliente) * posicao, SEEK_SET);
+                }
+                fread(&checagem->chave, sizeof(int), 1, clientes);
+                fread(checagem->nome, sizeof(char), sizeof(checagem->nome), clientes);
+                printf("nome: %s \n", checagem->nome);
+                fread(&checagem->estado, sizeof(int), 1, clientes);
                 fwrite(&contador, sizeof(int), 1, clientes);
             } else {
                 posicao = checagem->prox;
@@ -168,8 +179,7 @@ void inserir(FILE *tabhash, FILE *meta, FILE *clientes, Cliente *info){
         printf("Cliente cadastrado \n");
     }
     free(checagem);
-    free(info);
-
+    //free(info);
 }
 
 void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
@@ -181,22 +191,24 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
     fseek(hash, sizeof(int) * (posicao), SEEK_SET);
 
     fread(&posicao, sizeof(int), 1, hash);
+    printf("%d", posicao);
     if (posicao != -1) {
-        while (validade != 0) {
+        while (validade == 0) {
             rewind(clientes);
             fseek(clientes, sizeof(Cliente) * posicao, SEEK_SET);
             fread(&atual->chave, sizeof(int), 1, clientes);
             fread(atual->nome, sizeof(char), sizeof(atual->nome), clientes);
             fread(&atual->estado, sizeof(int), 1, clientes);
             fread(&atual->prox, sizeof(int), 1, clientes);
-
+            printf("\nbla");
             if (atual->chave == chave) {
                 validade = 1;
                 atual->chave = -1;
                 strcpy(atual->nome, "----");
                 atual->estado = 0;
                 proximo = atual->prox;
-                fseek(clientes, sizeof(Cliente) * -1, SEEK_SET);
+                rewind(clientes);
+                fseek(clientes, sizeof(Cliente) * posicao, SEEK_SET);
 
                 fwrite(&atual->chave, sizeof(int), 1, clientes);
                 fwrite(atual->nome, sizeof(char), sizeof(atual->nome), clientes);
