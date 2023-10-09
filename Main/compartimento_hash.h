@@ -3,10 +3,10 @@
 #include <string.h>
 #include "clientes.h"
 
-#define HASH_SIZE 7
-#define CLIENTS_FILENAME "clientes.dat"
-#define HASH_FILENAME "tabHash.dat"
-
+#define TAMANHO_HASH 7
+#define REGISTRO_CLIENTE "clientes.dat"
+#define TABELA_HASH "tabHash.dat"
+#define METADADOS "meta.dat"
 
 Cliente *criarCliente(int chavecliente, char *nomecliente){
     Cliente *novo = (Cliente *)malloc(sizeof(Cliente));
@@ -16,7 +16,7 @@ Cliente *criarCliente(int chavecliente, char *nomecliente){
         strcpy(novo->nome, nomecliente);
         novo->estado = 1;
         novo->prox = -1;
-        printf("novo cliente criado");
+        printf("\n> Novo cliente criado\n");
     }
     return novo;
 }
@@ -25,7 +25,7 @@ Cliente *busca(FILE *tabhash, FILE*clientes, int chave){
     Cliente *procurado = (Cliente *)malloc(sizeof(Cliente));
     int validade = 0;
 
-    int posicao = chave % HASH_SIZE;
+    int posicao = chave % TAMANHO_HASH;
 
     rewind(tabhash);
     //printf("Fazendo busca\n");
@@ -74,14 +74,14 @@ void inserir(FILE *tabhash, FILE *meta, FILE *clientes, Cliente *info){
     int posicao, contador, valor;
     int validade = 0;
     Cliente *checagem = (Cliente *)malloc(sizeof(Cliente));
-    posicao = info->chave % HASH_SIZE;
+    posicao = info->chave % TAMANHO_HASH;
     //printf("Posicao na hash eh %d", posicao);
 
     checagem = busca(tabhash, clientes, info->chave);
     if (checagem->chave == info->chave) {
         printf("A chave escolhida já é cadastrada pelo cliente %s, por favor escolha uma que não esteja em uso \n", checagem->nome);
         free(checagem);
-        free(info);
+        //free(info);
         return;
     }
 
@@ -142,7 +142,7 @@ void inserir(FILE *tabhash, FILE *meta, FILE *clientes, Cliente *info){
     }
     rewind(clientes);
     if (validade != 2) {
-        printf("Final da fila encontrado ou não existe um inicio da hash \n");
+        printf("\n> Final da fila encontrado ou não existe um inicio da hash!\n");
         fseek(clientes, sizeof(Cliente) * contador, SEEK_SET);
         fwrite(&info->chave, sizeof(int), 1, clientes);
         fwrite(info->nome, sizeof(char), sizeof(info->nome), clientes);
@@ -155,28 +155,28 @@ void inserir(FILE *tabhash, FILE *meta, FILE *clientes, Cliente *info){
         fread(checagem->nome, sizeof(char), sizeof(info->nome), clientes);
         fread(&checagem->estado, sizeof(int), 1, clientes);
         fread(&checagem->prox, sizeof(int), 1, clientes);
-        printf("chave: %d\n", checagem->chave);
-        printf("chave: %s\n", checagem->nome);
+        //printf("chave: %d\n", checagem->chave);
+        //printf("chave: %s\n", checagem->nome);
         if (validade == 0) { // Não existe cliente naquela hash
-            printf("Aplicando posicao na hash\n");
+            printf("> Aplicando posicao na hash...\n");
             rewind(tabhash);
-            posicao = info->chave % HASH_SIZE;
-          //printf("Na posicao %d, esta escrito: ", posicao);
+            posicao = info->chave % TAMANHO_HASH;
+            //printf("Na posicao %d, esta escrito: ", posicao);
             fseek(tabhash, sizeof(int) * (posicao), SEEK_SET);
             fwrite(&contador, sizeof(int), 1, tabhash);
             rewind(tabhash);
             fseek(tabhash, sizeof(int) * (posicao), SEEK_SET);
             fread(&valor, sizeof(int), 1, tabhash);
-            printf("%d \n", valor);
+            //printf("%d \n", valor);
         }
         contador = contador + 1;
-        printf("contador: %d \n", contador);
+        //printf("contador: %d \n", contador);
         rewind(meta);
         fwrite(&contador, sizeof(int), 1, meta);
         rewind(meta);
         fread(&contador, sizeof(int), 1, meta);
-        printf("contador do meta: %d \n", contador);
-        printf("Cliente cadastrado \n");
+        printf("> Contador do metadados: %d \n", contador);
+        printf("\nCliente cadastrado(a) com sucesso! \n");
     }
     free(checagem);
     //free(info);
@@ -184,14 +184,15 @@ void inserir(FILE *tabhash, FILE *meta, FILE *clientes, Cliente *info){
 
 void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
     int validade = 0, proximo;
-    int posicao = chave % HASH_SIZE;
+    int posicao = chave % TAMANHO_HASH;
     Cliente *atual = (Cliente *)malloc(sizeof(Cliente));
     rewind(hash);
 
     fseek(hash, sizeof(int) * (posicao), SEEK_SET);
 
     fread(&posicao, sizeof(int), 1, hash);
-    printf("%d", posicao);
+    //printf("%d", posicao);
+    printf("\n> Procurando cliente...\n");
     if (posicao != -1) {
         while (validade == 0) {
             rewind(clientes);
@@ -200,7 +201,7 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
             fread(atual->nome, sizeof(char), sizeof(atual->nome), clientes);
             fread(&atual->estado, sizeof(int), 1, clientes);
             fread(&atual->prox, sizeof(int), 1, clientes);
-            printf("\nbla");
+            //printf("\nteste");
             if (atual->chave == chave) {
                 validade = 1;
                 atual->chave = -1;
@@ -214,18 +215,18 @@ void deletar(FILE *hash, FILE *meta, FILE *clientes, int chave){
                 fwrite(atual->nome, sizeof(char), sizeof(atual->nome), clientes);
                 fwrite(&atual->estado, sizeof(int), 1, clientes);
 
-                printf("Cliente deletado\n");
+                printf("\nCliente deletado com sucesso!\n");
                 return;
             } else if (atual->prox == -1) {
                 validade = -1;
-                printf("Cliente não encontrado\n");
+                printf("Cliente não encontrado, por favor insira ele na Hash primeiro.\n");
                 break;
             } else {
                 posicao = atual->prox;
             }
         }
     } else {
-        printf("Cliente não existe\n");
+        printf("Cliente não existe, por favor insira ele na Hash primeiro\n");
     }
     free(atual);
 }
@@ -234,9 +235,10 @@ void lerarqs(FILE *tabhash, FILE *meta){
     int contador;
     int b;
     rewind(tabhash);
-    for (int i = 0; i < HASH_SIZE; i++) {
+    printf("\n");
+    for (int i = 0; i < TAMANHO_HASH; i++) {
         fread(&b, sizeof(int), 1, tabhash);
-        printf("hash: %d \n", b);
+        printf("hash %d: %d \n", i, b);
     }
     rewind(meta);
     fread(&contador, sizeof(int), 1, meta);
@@ -255,40 +257,42 @@ void zerar(FILE *tabhash, FILE *meta, FILE *clientes){
     fclose(tabhash);
     fclose(meta);
 
-    if ((nhash = fopen(HASH_FILENAME, "wb")) == NULL) {
+    if ((nhash = fopen(TABELA_HASH, "wb")) == NULL) {
         printf("Erro ao abrir o arquivo da tabela hash\n");
         exit(1);
     }
 
-    if ((nmeta = fopen("meta.dat", "wb")) == NULL) {
+    if ((nmeta = fopen(METADADOS, "wb")) == NULL) {
         printf("Erro ao abrir o arquivo da tabela meta\n");
         exit(1);
     }
 
 
-    for (int i = 0; i < HASH_SIZE; i++) {
+    for (int i = 0; i < TAMANHO_HASH; i++) {
         fwrite(&a, sizeof(int), 1, nhash);
     }
     fclose(nhash);
 
-    if ((nhash = fopen(HASH_FILENAME, "a+ b")) == NULL) {
+    if ((nhash = fopen(TABELA_HASH, "a+ b")) == NULL) {
         printf("Erro ao abrir o arquivo da tabela clientes\n");
         exit(1);
     }
 
     rewind(nhash);
-    for (int i = 0; i < HASH_SIZE; i++) {
+
+    /*for (int i = 0; i < TAMANHO_HASH; i++) {
         fread(&b, sizeof(int), 1, nhash);
         printf("hash: %d \n", b);
-    }
-    printf("Arquivo hash zerado\n");
+    }*/
+
+    printf("\n> Arquivo hash zerado\n");
 
     rewind(nmeta);
     fwrite(&contador, sizeof(int), 1, nmeta);
 
     fclose(nmeta);
 
-    if ((nmeta = fopen("meta.dat", "a+b")) == NULL) {
+    if ((nmeta = fopen(METADADOS, "a+b")) == NULL) {
         printf("Erro ao abrir o arquivo da tabela meta\n");
         exit(1);
     }
@@ -296,10 +300,12 @@ void zerar(FILE *tabhash, FILE *meta, FILE *clientes){
     rewind(nmeta);
 
     fread(&novo, sizeof(int), 1 ,nmeta);
-    printf("Contador zerado %d ", novo);
+    printf("> Contador: %d\n", novo);
+    printf("> Tabela Clientes zerada\n");
+    printf("Arquivos zerados com sucesso!");
     fclose(clientes);
 
-    if ((nclientes = fopen(CLIENTS_FILENAME, "w+b")) == NULL) {
+    if ((nclientes = fopen(REGISTRO_CLIENTE, "w+b")) == NULL) {
         printf("Erro ao abrir o arquivo da tabela clientes\n");
         exit(1);
     }

@@ -10,15 +10,15 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
     Cliente *novo;
 
 
-    printf("Menu:\n 1 - Inserir \n 2 - Deletar \n 3 - Busca \n 4 - Zerar \n 5 - Lerarquivos \n 6 - Sair \n");
-    printf("Digite uma das opcoes:");
+    printf("-------------Menu-------------\n 1 - Inserção \n 2 - Deletar \n 3 - Busca \n 4 - Zerar \n 5 - Mostrar tabela Hash e Metadados \n 6 - Sair \n -----------------------------");
+    printf("\nDigite uma das opcoes acima:");
     scanf("%d", &escolha);
     switch (escolha)
     {
     case (1) :
-        printf("Digite o número da chave do cliente: \n");
+        printf("Digite o número da chave do cliente que você deseja inserir: \n");
         scanf("%d", &chave);
-        printf("Digite o nome do cliente:\n");
+        printf("Digite o nome do cliente que você deseja inserir:\n");
         scanf("%s", nome);
         novo = criarCliente(chave, nome);
         inserir(hash, meta, clientes, novo);
@@ -26,7 +26,7 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
         fclose(hash);
         fclose(meta);
         fclose(clientes);
-        printf("fechando arquivos e ponteiros");
+        //printf("fechando arquivos e ponteiros");
         break;
     case (2):
         printf("Digite a chave do cliente que você quer deletar:\n");
@@ -44,12 +44,12 @@ void menu(FILE *hash, FILE *meta, FILE *clientes){
 
         novo = busca(hash, clientes, chave);
         if(novo->chave == -1){
-            printf("Cliente não encontrado");
+            printf("Cliente não encontrado,por favor insira ele na Hash primeiro");
         }
         else{
-            printf("Chave do cliente: %d \n", novo->chave);
-            printf("Nome do cliente: %s \n", novo->nome);
-            printf("Proximo cliente dessa faixa se encontra no %d lugar", novo->prox);
+            printf("> Chave do cliente: %d \n", novo->chave);
+            printf("> Nome do cliente: %s \n", novo->nome);
+            printf("> Proximo cliente dessa faixa se encontra no ' %d ' lugar", novo->prox);
         }
         free(novo);
         fclose(hash);
